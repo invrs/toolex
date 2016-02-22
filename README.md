@@ -15,10 +15,8 @@ A plug we can use in Routers to automatically report errors to Bugsnag using
 
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed as:
+1. Add toolex to your list of dependencies in `mix.exs`:
 
-  1. Add toolex to your list of dependencies in `mix.exs`:
-
-        def deps do
-          [{:toolex, github: "invrs/toolex"}]
-        end
+      def deps do
+        [{:toolex, github: "invrs/toolex"}]
+      end
