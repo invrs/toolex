@@ -4,10 +4,14 @@ A collection of Elixir helper classes/tools we use across apps.
 
 Specifically:
 
-## Toolex.ErrorReporter
+### Toolex.ErrorReporter
 
 An error reporter that reports to bugsnag.
 
+### Toolex.ErrorReporter.Plug
+
+A plug we can use in Routers to automatically report errors to Bugsnag using
+`Toolex.ErrorReporter`.
 
 ## Installation
 
