@@ -28,7 +28,7 @@ defmodule Toolex.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [
-      {:bugsnag, github: "mschae/bugsnag-elixir", branch: "add_environment"},
+      {:bugsnag, "~> 1.3.2"},
     ]
   end
 end
