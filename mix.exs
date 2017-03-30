@@ -7,7 +7,7 @@ defmodule Toolex.Mixfile do
      elixir: "~> 1.2",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
-     deps: deps]
+     deps: deps()]
   end
 
   # Configuration for the OTP application
@@ -28,7 +28,9 @@ defmodule Toolex.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [
-      {:bugsnag, "~> 1.3.2"},
+      {:amqp, "~> 0.1.5", optional: true},
+      {:bugsnag, "~> 1.4", optional: true},
+      {:redix, "~> 0.6.0", optional: true},
     ]
   end
 end
