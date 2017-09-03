@@ -1,7 +1,9 @@
 defmodule Toolex.BasePool do
   defmacro __using__([
     max_overflow: max_overflow,
+    poolboy: poolboy,
     pool_name: pool_name,
+    retry: retry,
     size: size,
     strategy: strategy,
     worker_args: worker_args,
@@ -12,6 +14,24 @@ defmodule Toolex.BasePool do
       @moduledoc false
 
       use Supervisor
+      require Logger
+
+      def exec(fun, retry \\ unquote(retry)) do
+        case :poolboy.transaction(unquote(poolboy), fun) do
+          :ok -> :ok
+          other when retry <= @retry ->
+            Logger.warn "#{inspect fun} failed: #{inspect other}. Retrying..."
+
+            :timer.sleep retry * 1_000
+
+            exec fun, retry + 1
+
+          other ->
+            Logger.error "#{inspect fun} failed permanently: #{inspect other}"
+
+            :error
+        end
+      end
 
       def start_link do
         Supervisor.start_link(__MODULE__, [])
