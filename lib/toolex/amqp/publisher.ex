@@ -9,10 +9,9 @@ defmodule Toolex.AMQP.Publisher do
       end
 
       def handle_cast({:publish, tag, data}, channel) do
-        exchange = unquote(exchange)
-        payload  = Poison.encode! %{tag: tag, data: data}
+        payload = Poison.encode! %{tag: tag, data: data}
 
-        Basic.publish channel, exchange, tag, payload
+        Basic.publish channel, unquote(exchange), tag, payload
 
         {:noreply, channel}
       end
