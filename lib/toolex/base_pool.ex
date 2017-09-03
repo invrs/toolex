@@ -1,8 +1,7 @@
 defmodule Toolex.BasePool do
   defmacro __using__([
-    max_overflow: max_overflow
+    max_overflow: max_overflow,
     pool_name: pool_name,
-    otp_app: otp_app,
     size: size,
     strategy: strategy,
     worker_args: worker_args,

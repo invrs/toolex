@@ -6,7 +6,7 @@ defmodule Toolex.RedixPool do
       use Supervisor
       use Toolex.BasePool,
         max_overflow: 10,
-        pool_name: unquote(pool_name)
+        pool_name: unquote(pool_name),
         otp_app: unquote(otp_app),
         size: 20,
         strategy: :lifo,
