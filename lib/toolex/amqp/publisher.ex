@@ -41,7 +41,7 @@ defmodule Toolex.AMQP.Publisher do
         :ok
       end
 
-      defp redis_url do
+      defp rabbitmq_url do
         case Application.get_env(unquote(otp_app), __MODULE__) do
           [rabbitmq_url: rabbitmq_url] -> rabbitmq_url
           _other                       ->
