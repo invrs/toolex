@@ -46,10 +46,10 @@ defmodule Toolex.BasePool do
         ]
 
         children = [
-          :poolboy.child_spec(:redix_poolboy, pool_opts, unquote(worker_args))
+          :poolboy.child_spec(unquote(pool_name), pool_opts, unquote(worker_args))
         ]
 
-        supervise(children, strat3egy: :one_for_one, name: __MODULE__)
+        supervise(children, strategy: :one_for_one, name: __MODULE__)
       end
     end
   end
