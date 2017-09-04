@@ -2,7 +2,7 @@ defmodule Toolex.BasePool do
   defmacro __using__([
     max_overflow: max_overflow,
     pool_name: pool_name,
-    retry: retry,
+    retry_limit: retry_limit,
     size: size,
     strategy: strategy,
     worker_args: worker_args,
@@ -15,10 +15,10 @@ defmodule Toolex.BasePool do
       use Supervisor
       require Logger
 
-      def exec(fun, retry \\ unquote(retry)) do
+      def exec(fun, retry \\ 0) do
         case :poolboy.transaction(unquote(pool_name), fun) do
           :ok -> :ok
-          other when retry <= @retry ->
+          other when retry <= unquote(retry_limit) ->
             Logger.warn "#{inspect fun} failed: #{inspect other}. Retrying..."
 
             :timer.sleep retry * 1_000
