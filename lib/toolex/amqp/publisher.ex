@@ -1,10 +1,8 @@
 defmodule Toolex.AMQP.Publisher do
   defmacro __using__([exchange: exchange, otp_app: otp_app]) do
     quote location: :keep do
-      use GenServer
-      use AMQP
 
-      require Logger
+      use GenServer
 
       def publish(pid, tag, payload) do
         GenServer.cast pid, {:publish, tag, payload}
@@ -13,7 +11,7 @@ defmodule Toolex.AMQP.Publisher do
       def handle_cast({:publish, tag, data}, channel) do
         payload = Poison.encode! %{tag: tag, data: data}
 
-        Basic.publish channel, unquote(exchange), tag, payload
+        AMQP.Basic.publish channel, unquote(exchange), tag, payload
 
         {:noreply, channel}
       end
@@ -23,8 +21,8 @@ defmodule Toolex.AMQP.Publisher do
       end
 
       def init(:ok) do
-        with {:ok, connection} <- Connection.open(rabbitmq_url()),
-             {:ok, channel}    <- Channel.open(connection)
+        with {:ok, connection} <- AMQP.Connection.open(rabbitmq_url()),
+             {:ok, channel}    <- AMQP.Channel.open(connection)
         do
           {:ok, channel}
         else
@@ -34,10 +32,8 @@ defmodule Toolex.AMQP.Publisher do
       end
 
       def terminate(reason, channel) do
-        Logger.info "Terminating channel #{inspect channel}: #{inspect reason}"
-
-        Channel.close(channel)
-        Connection.close(channel.conn)
+        AMQP.Channel.close(channel)
+        AMQP.Connection.close(channel.conn)
 
         :ok
       end
