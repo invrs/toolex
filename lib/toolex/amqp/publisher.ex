@@ -4,6 +4,8 @@ defmodule Toolex.AMQP.Publisher do
       use GenServer
       use AMQP
 
+      require Logger
+
       def publish(pid, tag, payload) do
         GenServer.cast pid, {:publish, tag, payload}
       end
