@@ -7,7 +7,7 @@ defmodule Toolex.RedixPool do
       use Toolex.BasePool,
         max_overflow: 10,
         pool_name: unquote(pool_name),
-        otp_app: unquote(otp_app),
+        retry_limit: 3,
         size: 20,
         strategy: :lifo,
         worker_args: redis_url(),
