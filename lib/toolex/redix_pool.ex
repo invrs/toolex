@@ -4,25 +4,14 @@ defmodule Toolex.RedixPool do
       @moduledoc false
 
       use Supervisor
-
-      def start_link do
-        Supervisor.start_link(__MODULE__, [])
-      end
-
-      def init([]) do
-        pool_opts = [
-          name: {:local, unquote(pool_name)},
-          worker_module: Redix,
-          size: 20,
-          max_overflow: 10,
-        ]
-
-        children = [
-          :poolboy.child_spec(:redix_poolboy, pool_opts, redis_url())
-        ]
-
-        supervise(children, strategy: :one_for_one, name: __MODULE__)
-      end
+      use Toolex.BasePool,
+        max_overflow: 10,
+        pool_name: unquote(pool_name),
+        retry_limit: 3,
+        size: 20,
+        strategy: :lifo,
+        worker_args: redis_url(),
+        worker_module: Redix
 
       def command(command, _retry \\ 0) do
         exec  &Redix.command(&1, command)
