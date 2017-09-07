@@ -32,8 +32,8 @@ defmodule Toolex.BasePool do
         end
       end
 
-      def start_link do
-        Supervisor.start_link(__MODULE__, [])
+      def start_link(opts \\ []) do
+        Supervisor.start_link(__MODULE__, [], opts)
       end
 
       def init([]) do
