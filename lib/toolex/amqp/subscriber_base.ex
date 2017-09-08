@@ -90,11 +90,12 @@ defmodule Toolex.AMQP.SubscriberBase do
       end
 
       def terminate(_reason, state) do
-        "Terminating channel #{inspect state.channel} on " <>
+        "Terminating channel #{inspect state.channel.pid} on " <>
         "connection #{inspect state.connection}..."
         |> Logger.info()
 
         AMQP.Channel.close state.channel
+        AMQP.Connection.close state.connection
 
         :ok
       end
