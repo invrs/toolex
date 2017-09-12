@@ -28,8 +28,8 @@ defmodule Toolex.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [
-      {:amqp, "~> 0.2.0", optional: true},
-      {:bugsnag, "~> 1.4", optional: true},
+      {:amqp, "~> 0.3.0", optional: true},
+      {:bugsnag, "~> 1.5", optional: true},
       {:redix, "~> 0.6.0", optional: true},
     ]
   end
