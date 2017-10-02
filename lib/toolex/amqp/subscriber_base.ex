@@ -77,7 +77,7 @@ defmodule Toolex.AMQP.SubscriberBase do
             AMQP.Exchange.declare(channel, exchange_name, exchange_type, durable: true)
             AMQP.Queue.unbind(channel, queue_name, exchange_name)
             AMQP.Queue.bind(channel, queue_name, exchange_name, state.bind_opts)
-            AMQP.Basic.consume(channel, queue_name, self)
+            AMQP.Basic.consume(channel, queue_name, self())
 
             {:ok, %{state | channel: channel}}
         end
