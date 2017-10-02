@@ -38,13 +38,6 @@ defmodule Toolex.RedixPool do
         |> Enum.map(&possibly_raise/1)
       end
 
-      defp exec(fun) do
-        ExStatsD.counter 1, "webapp.db.query_count"
-        ExStatsD.timing "webapp.db.query_exec_time", fn ->
-          :poolboy.transaction(unquote(pool_name), fun)
-        end
-      end
-
       defp redis_url do
         case Application.get_env(unquote(otp_app), __MODULE__) do
           [redis_url: redis_url] -> redis_url
