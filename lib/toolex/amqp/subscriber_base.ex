@@ -32,10 +32,7 @@ defmodule Toolex.AMQP.SubscriberBase do
 
             metadata = %{
               payload: payload,
-              metadata:
-                Map.update(meta, :headers, [], fn
-                  (headers) -> Enum.map(headers, &Tuple.to_list/1)
-                end)
+              metadata: Map.update(meta, :headers, [], &update_meta_headers/1)
             }
 
             Toolex.ErrorReporter.report reason, metadata, "AMQP.SubscriberBase/#{state.module}"
@@ -88,6 +85,11 @@ defmodule Toolex.AMQP.SubscriberBase do
         |> Macro.underscore
         |> String.replace(~r/[^a-z]/, "-")
       end
+
+      defp update_meta_headers(headers) when is_list(headers) do
+        Enum.map headers, &Tuple.to_list/1
+      end
+      defp update_meta_headers(_), do: []
 
       def terminate(_reason, state) do
         "Terminating channel #{inspect state.channel} on " <>
