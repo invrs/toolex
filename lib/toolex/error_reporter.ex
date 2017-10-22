@@ -26,10 +26,12 @@ defmodule Toolex.ErrorReporter do
       raise reason
     else
       Logger.error "#{inspect reason}"
-      Bugsnag.report reason, [
-        metadata: metadata,
-        context: context
-      ]
+
+      # TODO: Restore this!
+      # Bugsnag.report reason, [
+      #   metadata: metadata,
+      #   context: context
+      # ]
     end
   end
 end
