@@ -17,19 +17,21 @@ defmodule Toolex.ErrorReporter do
   ```
   """
   require Logger
-  @config Application.get_env(:toolex, Toolex.ErrorReporter)
-  @exclude_envs @config[:exclude_envs] || [:test]
-  @env Mix.env
-
-  def report(reason, _metadata, _context) when @env in @exclude_envs do
-    raise reason
-  end
 
   def report(reason, metadata, context) do
-    Logger.error "#{inspect reason}"
-    Bugsnag.report reason, [
-      metadata: metadata,
-      context: context
-    ]
+    config       = Application.get_env(:toolex, Toolex.ErrorReporter)
+    exclude_envs = config[:exclude_envs] || [:test]
+
+    if Mix.env() in exclude_envs do
+      raise reason
+    else
+      Logger.error "#{inspect reason}"
+
+      # TODO: Restore this!
+      # Bugsnag.report reason, [
+      #   metadata: metadata,
+      #   context: context
+      # ]
+    end
   end
 end
