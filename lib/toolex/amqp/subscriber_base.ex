@@ -19,21 +19,27 @@ defmodule Toolex.AMQP.SubscriberBase do
         Logger.info "Deliver received for #{state.module}"
 
         try do
+          IO.puts "RECEIVED PAYLOAD!"
           payload = Poison.decode!(payload)
+          IO.puts "DECODED PAYLOAD: #{inspect payload}, APPLYING handle/2"
           apply state.module, :handle, [payload, meta]
+          IO.puts "APPLIED handle/2, ACKNOWLEDGING..."
           AMQP.Basic.ack state.channel, meta.delivery_tag
+          IO.puts "ACKNOWLEDGED"
         rescue
           reason ->
+            IO.puts "SOMETHING WENT WRONG: #{inspect reason}"
             payload =
               case Poison.decode payload do
                 {:ok, hash}     -> hash
                 {:error, error} -> "Decode error: #{error}, #{payload}"
               end
 
+            IO.puts "GOT METADATA: "
             metadata = %{
               payload: payload,
               metadata: Map.update(meta, :headers, [], &update_meta_headers/1)
-            }
+            } |> IO.inspect()
 
             Toolex.ErrorReporter.report reason, metadata, "AMQP.SubscriberBase/#{state.module}"
 
