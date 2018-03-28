@@ -16,10 +16,18 @@ defmodule Toolex.AMQP.SubscriberBase do
       end
 
       def handle_info({:basic_deliver, payload, meta}, state) do
-        Logger.info "Deliver received for #{state.module}"
+        # Logger.info "Deliver received for #{state.module}"
 
         try do
           payload = Poison.decode!(payload)
+
+          is_mail_payload? = is_binary(payload["data"]["params"]["email"])
+
+          if is_mail_payload? do
+            Logger.info "Received mail payload!"
+            Logger.info "#{inspect(payload)}"
+          end
+
           apply state.module, :handle, [payload, meta]
           AMQP.Basic.ack state.channel, meta.delivery_tag
         rescue
