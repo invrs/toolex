@@ -16,8 +16,6 @@ defmodule Toolex.AMQP.SubscriberBase do
       end
 
       def handle_info({:basic_deliver, payload, meta}, state) do
-        Logger.info "Deliver received for #{state.module}"
-
         try do
           payload = Poison.decode!(payload)
           apply state.module, :handle, [payload, meta]
