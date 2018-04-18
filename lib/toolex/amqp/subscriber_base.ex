@@ -12,6 +12,8 @@ defmodule Toolex.AMQP.SubscriberBase do
 
       # Server, state is the attached handler
       def start_link(state) do
+        Logger.debug "Starting with state: "
+        IO.inspect(state)
         GenServer.start_link(__MODULE__, state, name: state.module)
       end
 
@@ -61,9 +63,10 @@ defmodule Toolex.AMQP.SubscriberBase do
 
       def init(state) do
         queue_name    = module_to_queue_name state.module
+        IO.puts "INITIALIZING QUEUE #{queue_name}"
         exchange_name = unquote(exchange_name)
         exchange_type = unquote(exchange_type)
-
+        IO.puts "ON EXCHANGE #{exchange_name} (#{exchange_type})"
         case AMQP.Channel.open(state.connection) do
           {:error, reason} -> {:stop, "Can't open channel: #{inspect reason}"}
           {:ok, channel}   ->
@@ -73,8 +76,8 @@ defmodule Toolex.AMQP.SubscriberBase do
             AMQP.Queue.unbind(channel, queue_name, exchange_name)
             AMQP.Queue.bind(channel, queue_name, exchange_name, state.bind_opts)
             AMQP.Basic.consume(channel, queue_name, self())
-
-            {:ok, %{state | channel: channel}}
+            IO.puts "AMQP setup complete"
+            {:ok, %{state | channel: channel}} |> IO.inspect()
         end
       end
 
