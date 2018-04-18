@@ -21,7 +21,7 @@ defmodule Toolex.AMQP.SubscriberBase do
         try do
           payload = Poison.decode!(payload)
           apply state.module, :handle, [payload, meta]
-          AMQP.Basic.ack state.channel, meta.delivery_tag
+          :ok = AMQP.Basic.ack state.channel, meta.delivery_tag
         rescue
           reason ->
             payload =
