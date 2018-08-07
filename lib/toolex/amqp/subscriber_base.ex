@@ -20,7 +20,9 @@ defmodule Toolex.AMQP.SubscriberBase do
 
         try do
           payload = Poison.decode!(payload)
+          Logger.info("applying :handle...")
           apply state.module, :handle, [payload, meta]
+          Logger.info("acknowledging...")
           AMQP.Basic.ack state.channel, meta.delivery_tag
         rescue
           reason ->
@@ -32,7 +34,7 @@ defmodule Toolex.AMQP.SubscriberBase do
 
             metadata = %{
               payload: payload,
-              metadata: Map.update(meta, :headers, [], &update_meta_headers/1)
+              metadata: update_metadata(meta)
             }
 
             Toolex.ErrorReporter.report reason, metadata, "AMQP.SubscriberBase/#{state.module}"
@@ -85,6 +87,11 @@ defmodule Toolex.AMQP.SubscriberBase do
         |> Macro.underscore
         |> String.replace(~r/[^a-z]/, "-")
       end
+
+      defp update_metadata(metadata) when is_map(metadata) do
+        Map.update(metadata, :headers, [], &update_meta_headers/1)
+      end
+      defp update_metadata(metadata), do: metadata
 
       defp update_meta_headers(headers) when is_list(headers) do
         Enum.map headers, &Tuple.to_list/1
