@@ -15,21 +15,8 @@ defmodule Toolex.BasePool do
       use Supervisor
       require Logger
 
-      def exec(fun, retry \\ 0) do
-        case :poolboy.transaction(unquote(pool_name), fun) do
-          :ok -> :ok
-          other when retry <= unquote(retry_limit) ->
-            Logger.warn "#{inspect fun} failed: #{inspect other}. Retrying..."
-
-            :timer.sleep retry * 1_000
-
-            exec fun, retry + 1
-
-          other ->
-            Logger.error "#{inspect fun} failed permanently: #{inspect other}"
-
-            :error
-        end
+      def exec(fun) do
+        :poolboy.transaction unquote(pool_name), fun
       end
 
       def start_link(opts \\ []) do
