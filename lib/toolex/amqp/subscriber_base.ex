@@ -92,6 +92,8 @@ defmodule Toolex.AMQP.SubscriberBase do
       defp update_metadata(metadata), do: metadata
 
       defp update_meta_headers(headers) when is_list(headers) do
+        IO.puts("UPDATING META HEADERS (is list): (#{inspect(headers)})")
+        IO.inspect(headers)
         Enum.map headers, &Tuple.to_list/1
       end
       defp update_meta_headers(_), do: []
