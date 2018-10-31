@@ -56,6 +56,12 @@ defmodule Toolex.AMQP.SubscriberBase do
         {:noreply, state}
       end
 
+      def handle_info(info, state) do
+        Logger.info "Received info: #{inspect info}"
+
+        {:noreply, state}
+      end
+
       def handle_call(msg, _from, state) do
         Logger.info "received call: #{inspect msg}"
         {:noreply, state}
