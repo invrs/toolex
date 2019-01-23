@@ -107,9 +107,9 @@ defmodule Toolex.AMQP.SubscriberBase do
         "connection #{inspect state.connection}..."
         |> Logger.info()
 
-        {:ok, _} = AMQP.Channel.close state.channel
-
-        :ok
+        with {:error, reason} <- AMQP.Channel.close(state.channel) do
+          Logger.warn("Error closing #{state.channel}: #{inspect(reason)}")
+        end
       end
     end
   end
