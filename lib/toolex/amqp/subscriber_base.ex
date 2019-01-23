@@ -110,6 +110,8 @@ defmodule Toolex.AMQP.SubscriberBase do
         with {:error, reason} <- AMQP.Channel.close(state.channel) do
           Logger.warn("Error closing #{state.channel}: #{inspect(reason)}")
         end
+
+        :ok
       end
     end
   end
