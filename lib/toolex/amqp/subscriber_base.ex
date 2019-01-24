@@ -21,7 +21,7 @@ defmodule Toolex.AMQP.SubscriberBase do
         try do
           payload = Poison.decode!(payload)
           apply state.module, :handle, [payload, meta]
-          {:ok, _} = AMQP.Basic.ack state.channel, meta.delivery_tag
+          :ok = AMQP.Basic.ack state.channel, meta.delivery_tag
         rescue
           reason ->
             payload =
@@ -41,7 +41,7 @@ defmodule Toolex.AMQP.SubscriberBase do
             Logger.error "Exception: #{inspect reason}"
             Logger.error "First attempt: #{inspect !meta.redelivered}"
 
-            {:ok, _} = AMQP.Basic.reject state.channel, meta.delivery_tag, requeue: !meta.redelivered
+            :ok = AMQP.Basic.reject state.channel, meta.delivery_tag, requeue: !meta.redelivered
         end
 
         {:noreply, state}
@@ -108,7 +108,7 @@ defmodule Toolex.AMQP.SubscriberBase do
         |> Logger.info()
 
         with {:error, reason} <- AMQP.Channel.close(state.channel) do
-          Logger.warn("Error closing #{state.channel}: #{inspect(reason)}")
+          Logger.warn("Error closing #{inspect(state.channel)}: #{inspect(reason)}")
         end
 
         :ok
