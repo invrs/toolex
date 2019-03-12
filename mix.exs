@@ -30,7 +30,7 @@ defmodule Toolex.Mixfile do
     [
       {:amqp, "~> 1.1", optional: true},
       {:bugsnag, "~> 1.4", optional: true},
-      {:redix, "~> 0.6.0", optional: true},
+      {:redix, "~> 0.8.1", optional: true},
     ]
   end
 end
