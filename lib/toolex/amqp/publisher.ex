@@ -8,12 +8,24 @@ defmodule Toolex.AMQP.Publisher do
         GenServer.cast pid, {:publish, tag, payload}
       end
 
+      def publish_call(pid, tag, payload) do
+        GenServer.call pid, {:publish, tag, payload}
+      end
+
       def handle_cast({:publish, tag, data}, channel) do
         payload = Poison.encode! %{tag: tag, data: data}
 
         AMQP.Basic.publish channel, unquote(exchange), tag, payload
 
         {:noreply, channel}
+      end
+
+      def handle_call({:publish, tag, data}, _from, channel) do
+        payload = Poison.encode! %{tag: tag, data: data}
+        reply   =
+          AMQP.Basic.publish channel, unquote(exchange), tag, payload
+
+        {:reply, reply, channel}
       end
 
       def start_link(opts \\ []) do
